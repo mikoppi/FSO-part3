@@ -30,8 +30,8 @@ const generateId = () => {
   return Math.floor(Math.random() * 1000000);
 };
 
-app.use(cors())
 app.use(express.json());
+app.use(cors())
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body'));
 app.use(express.static('build'))
