@@ -9,13 +9,13 @@ const generateId = () => {
   return Math.floor(Math.random() * 1000000);
 };
 
+app.use(express.static("build"));
 app.use(express.json());
-app.use(cors());
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 app.use(
   morgan(":method :url :status :response-time ms - :res[content-length] :body")
 );
-app.use(express.static("build"));
+app.use(cors());
 
 //get all persons
 app.get("/api/persons", (req, res) => {
@@ -73,11 +73,11 @@ app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body;
   const person = {
     name: body.name,
-    number: body.number
+    number: body.number,
   };
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
-    .then(updatedPerson => {
-      res.json(updatedPerson)
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
     })
     .catch((error) => next(error));
 });
@@ -104,9 +104,13 @@ app.post("/api/persons", (req, res) => {
         error: "name must be unique",
       });
     } else {
-      person.save().then((result) => {
-        console.log(`added ${body.name} number ${body.number} to phonebook`);
-      });
+      person
+        .save()
+        .then((savedPerson) => savedPerson.toJSON())
+        .then((formattedPerson) => {
+          res.json(formattedPerson);
+          console.log(`added ${body.name} number ${body.number} to phonebook`);
+        });
     }
   });
 });
