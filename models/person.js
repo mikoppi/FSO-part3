@@ -34,7 +34,7 @@ const personSchema = new mongoose.Schema({
         },
         msg: "Number is too short",
       },
-    ]
+    ],
   },
 });
 

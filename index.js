@@ -11,27 +11,27 @@ const generateId = () => {
 
 app.use(express.static("build"));
 app.use(express.json());
-morgan.token("body", (req, res) => JSON.stringify(req.body));
+morgan.token("body", (req) => JSON.stringify(req.body));
 app.use(
   morgan(":method :url :status :response-time ms - :res[content-length] :body")
 );
 app.use(cors());
 
 //get all persons
-app.get("/api/persons", (req, res) => {
+app.get("/api/persons", (req, res, next) => {
   Person.find({})
     .then((persons) => {
       if (persons) {
         res.json(persons);
       } else {
-        response.status(404).end();
+        res.status(404).end();
       }
     })
     .catch((error) => next(error));
 });
 
 //get info page
-app.get("/info", (req, res) => {
+app.get("/info", (req, res, next) => {
   Person.find({})
     .then((persons) => {
       if (persons) {
@@ -40,7 +40,7 @@ app.get("/info", (req, res) => {
                   <p>${new Date()}</p>
                 </div>`);
       } else {
-        response.status(404).end();
+        res.status(404).end();
       }
     })
     .catch((error) => next(error));
@@ -70,17 +70,12 @@ app.delete("/api/persons/:id", (req, res, next) => {
 
 //update one person
 app.put("/api/persons/:id", (req, res, next) => {
-  const { name, number } = req.body
+  const { name, number } = req.body;
   const person = {
     name: name,
     number: number,
   };
-  Person.findByIdAndUpdate(
-    req.params.id,
-    person,
-    { new: true},
-    
-  )
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then((updatedPerson) => {
       res.json(updatedPerson);
     })

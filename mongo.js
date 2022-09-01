@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 
 if (process.argv.length < 3) {
   console.log("give password as argument");
   process.exit(1);
 }
 
-const password = process.argv[2];
+// const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
 
@@ -26,7 +26,7 @@ const person = new Person({
 });
 
 if (process.argv[3] && process.argv[4]) {
-  person.save().then((result) => {
+  person.save().then(() => {
     console.log(`added ${name} number ${number} to phonebook`);
     mongoose.connection.close();
   });
@@ -39,5 +39,3 @@ if (process.argv[3] && process.argv[4]) {
     mongoose.connection.close();
   });
 }
-
-
